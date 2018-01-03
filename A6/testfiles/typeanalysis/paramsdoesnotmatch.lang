@@ -1,0 +1,7 @@
+int fun(int a, int b) {
+	int a = 3;
+}
+
+int c() {
+	int d = fun(3);
+}

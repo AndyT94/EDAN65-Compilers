@@ -1,0 +1,18 @@
+Program
+  List
+    Function
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          If
+            Equal
+              Id_use ID="a"
+              Id_use ID="b"
+            Block
+              List
+                Assign
+                  Id_use ID="b"
+                  Id_use ID="c"
+            Opt

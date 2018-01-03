@@ -1,0 +1,11 @@
+int a() {
+	int a;
+	if(a > 2) {
+		a = a + 2;
+	} else {
+		a = a + a;
+	}
+	return 0;
+}
+
+

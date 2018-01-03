@@ -1,0 +1,27 @@
+Program
+  List
+    Function
+      IntType
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          While
+            Equal
+              Id_use ID="a"
+              Numeral NUMERAL="5"
+            Block
+              List
+                Assign
+                  Id_use ID="a"
+                  Numeral NUMERAL="6"
+                While
+                  Equal
+                    Id_use ID="a"
+                    Numeral NUMERAL="6"
+                  Block
+                    List
+                      Assign
+                        Id_use ID="t"
+                        Id_use ID="r"

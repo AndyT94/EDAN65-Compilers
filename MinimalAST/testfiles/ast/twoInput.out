@@ -1,0 +1,10 @@
+Program
+  List
+    Function
+      Id_decl ID="a"
+      Params
+        List
+          Id_decl ID="b"
+          Id_decl ID="c"
+      Block
+        List

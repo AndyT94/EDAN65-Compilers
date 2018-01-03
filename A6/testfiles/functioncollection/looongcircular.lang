@@ -1,0 +1,39 @@
+int main() {
+	a();
+}
+
+int a() {
+	b();
+}
+
+int b() {
+	c();
+}
+
+int c() {
+	d();
+}
+
+int d() {
+	e();
+}
+
+int e() {
+	f();
+}
+
+int f() {
+	g();
+}
+
+int g() {
+	h();
+}
+
+int h() {
+	i();
+}
+
+int i() {
+	a();
+}

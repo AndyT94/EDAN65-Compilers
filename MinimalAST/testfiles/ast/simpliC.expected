@@ -1,0 +1,133 @@
+Program
+  List
+    Function
+      Id_decl ID="gcd1"
+      Params
+        List
+          Id_decl ID="a"
+          Id_decl ID="b"
+      Block
+        List
+          While
+            NotEqual
+              Id_use ID="a"
+              Id_use ID="b"
+            Block
+              List
+                If
+                  Greater
+                    Id_use ID="a"
+                    Id_use ID="b"
+                  Block
+                    List
+                      Assign
+                        Id_use ID="a"
+                        Sub
+                          Id_use ID="a"
+                          Id_use ID="b"
+                  Opt
+                    Block
+                      List
+                        Assign
+                          Id_use ID="b"
+                          Sub
+                            Id_use ID="b"
+                            Id_use ID="a"
+          Return
+            Id_use ID="a"
+    Function
+      Id_decl ID="gcd2"
+      Params
+        List
+          Id_decl ID="a"
+          Id_decl ID="b"
+      Block
+        List
+          If
+            Equal
+              Id_use ID="b"
+              Numeral NUMERAL="0"
+            Block
+              List
+                Return
+                  Id_use ID="a"
+            Opt
+          Return
+            FunctionExpr
+              Id_use ID="gcd2"
+              Exprs
+                List
+                  Id_use ID="b"
+                  Mod
+                    Id_use ID="a"
+                    Id_use ID="b"
+    Function
+      Id_decl ID="main"
+      Params
+        List
+      Block
+        List
+          Decl
+            Id_decl ID="a"
+            Opt
+          Decl
+            Id_decl ID="b"
+            Opt
+          Assign
+            Id_use ID="a"
+            FunctionExpr
+              Id_use ID="read"
+              Exprs
+                List
+          Assign
+            Id_use ID="b"
+            FunctionExpr
+              Id_use ID="read"
+              Exprs
+                List
+          CallStmt
+            FunctionExpr
+              Id_use ID="print"
+              Exprs
+                List
+                  FunctionExpr
+                    Id_use ID="gcd1"
+                    Exprs
+                      List
+                        Id_use ID="a"
+                        Id_use ID="b"
+          CallStmt
+            FunctionExpr
+              Id_use ID="print"
+              Exprs
+                List
+                  FunctionExpr
+                    Id_use ID="gcd2"
+                    Exprs
+                      List
+                        Id_use ID="a"
+                        Id_use ID="b"
+          Decl
+            Id_decl ID="diff"
+            Opt
+              Sub
+                FunctionExpr
+                  Id_use ID="gcd1"
+                  Exprs
+                    List
+                      Id_use ID="a"
+                      Id_use ID="b"
+                FunctionExpr
+                  Id_use ID="gcd2"
+                  Exprs
+                    List
+                      Id_use ID="a"
+                      Id_use ID="b"
+          CallStmt
+            FunctionExpr
+              Id_use ID="print"
+              Exprs
+                List
+                  Id_use ID="diff"
+          Return
+            Numeral NUMERAL="0"

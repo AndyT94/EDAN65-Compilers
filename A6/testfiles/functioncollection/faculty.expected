@@ -1,0 +1,5 @@
+fac -> fac
+f -> fac
+f -> print
+main -> f
+fac is circular

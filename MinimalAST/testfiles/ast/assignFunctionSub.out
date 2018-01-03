@@ -1,0 +1,26 @@
+Program
+  List
+    Function
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          Decl
+            Id_decl ID="diff"
+            Opt
+          Assign
+            Id_use ID="diff"
+            Sub
+              FunctionExpr
+                Id_use ID="gcd1"
+                Exprs
+                  List
+                    Id_use ID="a"
+                    Id_use ID="b"
+              FunctionExpr
+                Id_use ID="gcd2"
+                Exprs
+                  List
+                    Id_use ID="a"
+                    Id_use ID="b"

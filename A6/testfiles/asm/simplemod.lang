@@ -1,0 +1,4 @@
+int main() {
+	print(38%6);
+	return 1;
+}

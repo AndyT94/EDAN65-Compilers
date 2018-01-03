@@ -1,0 +1,226 @@
+import java.util.HashMap;
+import java.util.Map;
+
+aspect Interpreter {
+
+	public class ActivationRecord {
+	//	private static final ActivationRecord BOTTOM = new ActivationRecord();
+		private Map<String, Integer> decls;
+		private ActivationRecord tail;
+		
+		public ActivationRecord() {
+			decls = new HashMap<String, Integer>();
+			tail = null;
+		}
+		
+		public ActivationRecord(ActivationRecord actrec) {
+			decls = new HashMap<String, Integer>();
+			tail = actrec;
+		}
+		
+		public void put(String name, int value) {
+			decls.put(name, value);
+		}
+		
+		public int get(String name) {
+			return decls.get(name);
+		}
+	}
+	
+	public class ReturnException extends Exception {
+		private int value;
+	
+		public ReturnException(int value) {
+			super();
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return value;
+		}
+	}
+	
+	
+		public void Program.eval() {
+			Id_decl main = localLookup("main");
+			if(main.isUnknown()) {
+				throw new RuntimeException();
+			}
+			main.function().eval(new ActivationRecord());
+		}
+		
+		public int Function.eval(ActivationRecord actrec){
+			for(Stmt s:getBlock().getStmts()) {
+			try{
+				s.eval(actrec);
+				} catch (ReturnException e){
+					return e.getValue();
+				}
+			}
+			return 0;
+			//throw new RuntimeException();
+		}
+		
+		public void Stmt.eval(ActivationRecord actrec) throws ReturnException{
+		
+		}
+		
+		public void Decl.eval(ActivationRecord actrec) {
+			if(hasExpr()) {
+				actrec.put(getId_decl().uniqueName(), getExpr().eval(actrec));
+			}else{
+				actrec.put(getId_decl().uniqueName(), 0);
+			}
+		}
+		
+		public void Assign.eval(ActivationRecord actrec) {
+			actrec.put(getId_use().decl().uniqueName(), getExpr().eval(actrec));
+		}
+		
+		public void CallStmt.eval(ActivationRecord actrec) {
+			Id_decl decl = getFunctionExpr().getId_use().lookup(getFunctionExpr().getId_use().getID());
+			if(!decl.isUnknown()) {
+				if(decl.getID().equals("print")) {
+					System.out.println(getFunctionExpr().getExprs().getExpr(0).eval(actrec));
+				} else {
+					getFunctionExpr().eval(actrec);
+				}
+			}
+		}
+		
+		public void If.eval(ActivationRecord actrec) throws ReturnException{
+		//	ActivationRecord newActrec = new ActivationRecord(actrec);
+			if(getExpr().eval(actrec) == 1) {
+				for(Stmt s:getIf().getStmts()) {
+					s.eval(actrec);
+				}
+			}else{
+				if(hasElse()){
+					for(Stmt s:getElse().getStmts()) {
+						s.eval(actrec);
+					}	
+				}
+			}
+		}
+		
+		public void While.eval(ActivationRecord actrec) throws ReturnException{
+		//	ActivationRecord newActrec = new ActivationRecord(actrec);
+			while(getExpr().eval(actrec) == 1) {
+				for(Stmt s:getBlock().getStmts()) {
+						s.eval(actrec);
+				}
+			}
+		}
+		
+		public void Return.eval(ActivationRecord actrec) throws ReturnException{
+			throw new ReturnException(getExpr().eval(actrec));
+		}
+		
+		
+		public int Expr.eval(ActivationRecord actrec) {
+			return 0;
+		}
+		
+		public int FunctionExpr.eval(ActivationRecord actrec) {
+			Id_decl func = getId_use().lookup(getId_use().getID());
+			Function f = func.function();
+			ActivationRecord newactrec = new ActivationRecord(actrec);
+			for(int i = 0; i < getExprs().getNumExpr(); i++){
+				newactrec.put(f.getParams().getId_decl(i).uniqueName(), getExprs().getExpr(i).eval(actrec));
+			}
+			return f.eval(newactrec);
+		}
+		
+		public int Numeral.eval(ActivationRecord actrec) {
+			return Integer.parseInt(getNUMERAL());
+		}
+		
+		public int Id_use.eval(ActivationRecord actrec) {
+			return actrec.get(decl().uniqueName());
+		}
+		
+		public int Add.eval(ActivationRecord actrec) {
+			return getLeft().eval(actrec) + getRight().eval(actrec);
+		}
+		
+		public int Sub.eval(ActivationRecord actrec) {
+			return getLeft().eval(actrec) - getRight().eval(actrec);
+		}
+		
+		public int Mul.eval(ActivationRecord actrec) {
+			return getLeft().eval(actrec) * getRight().eval(actrec);
+		}
+		
+		public int Div.eval(ActivationRecord actrec) {
+			return getLeft().eval(actrec) / getRight().eval(actrec);
+		}
+		
+		public int Mod.eval(ActivationRecord actrec) {
+			return getLeft().eval(actrec) % getRight().eval(actrec);
+		}
+		
+		public int Equal.eval(ActivationRecord actrec) {
+			return (getLeft().eval(actrec) == getRight().eval(actrec)) ? 1 : 0;
+		}
+		
+		public int NotEqual.eval(ActivationRecord actrec) {
+			return (getLeft().eval(actrec) != getRight().eval(actrec)) ? 1 : 0;
+		}
+		
+		public int Greater.eval(ActivationRecord actrec) {
+			return (getLeft().eval(actrec) > getRight().eval(actrec)) ? 1 : 0;
+		}
+		
+		public int Lesser.eval(ActivationRecord actrec) {
+			return (getLeft().eval(actrec) < getRight().eval(actrec)) ? 1 : 0;
+		}
+		
+		public int GreatEqual.eval(ActivationRecord actrec) {
+			return (getLeft().eval(actrec) >= getRight().eval(actrec)) ? 1 : 0;
+		}
+		
+		public int LessEqual.eval(ActivationRecord actrec) {
+			return (getLeft().eval(actrec) <= getRight().eval(actrec)) ? 1 : 0;
+		}
+		
+		syn String Id_decl.uniqueName() = index() + getID();
+		inh String Id_decl.index();
+		eq Function.getChild().index() {
+			return "";
+		}
+		
+		inh String Block.index();
+		eq Block.getStmt(int index).index() = localIndex(index);
+		syn String Block.localIndex(int i) {
+			return index() + i + "_";
+		}
+		
+	
+		inh Function FunctionExpr.enclosedFunction();
+		inh Function Stmt.enclosedFunction();
+		eq Function.getChild().enclosedFunction() = this;
+
+
+
+
+	syn Set<Function> Function.reachable() circular [new HashSet<Function>()] { 
+			HashSet<Function> result = new HashSet<Function>(); 
+			for(Function f : functionCollections()) { 
+					result.add(f); 
+					result.addAll(f.reachable());
+		 	} 
+			return result; 
+		} 
+
+		inh boolean Function.isCircular();
+		eq Program.getFunction(int index).isCircular() {
+			Function f = getFunction(index);
+			for(Function e : f.functionCollections()){
+				Set<Function> se = e.reachable();
+					if(se.contains(f)){
+						return true;
+					}
+			}
+			return false;
+		}
+}

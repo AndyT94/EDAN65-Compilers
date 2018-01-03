@@ -1,0 +1,18 @@
+Answers
+
+1 
+	Id_decl is used to declare objects and id_use is used when an object is used
+2 
+	It looks up and sees if the object is already declared and it is but it has to 
+	up all the way to let and then down through the list
+3
+	It looks up and if can't find it it will declare it as unknown
+	The id_decl lookup will be used next
+4
+	It does a lookup for it self
+5
+	Takes an unknown object and turns it into a known unknown object
+6
+	It creates the different errors and stores them in a treemap
+7
+	

@@ -1,0 +1,1 @@
+Error at line 3: b is not compatible. IDType: int ExprType: bool

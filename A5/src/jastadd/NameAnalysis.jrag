@@ -1,0 +1,94 @@
+import java.util.Set;
+import java.util.HashSet;
+
+aspect NameAnalysis {
+	syn Id_decl Id_use.decl() = lookup(getID());
+	inh Id_decl Id_use.lookup(String name);
+	
+	inh Id_decl Id_decl.lookup(String name);
+	syn boolean Id_decl.isMultiplyDeclared() = lookup(getID()) != this;
+	
+	eq Program.getChild().lookup(String name) = localLookup(name);	
+	syn Id_decl Program.localLookup(String name) {
+		List<Function> list = predefinedFunctions();
+		for(Function f : list){
+			if(f.getId_decl().getID().equals(name)) {	
+				return f.getId_decl();
+			}
+		}
+		for(int i = 0; i< getNumFunction(); i++) {
+			if(getFunction(i).getId_decl().getID().equals(name)) {
+				return getFunction(i).getId_decl();
+			}
+		}
+		return unknownDecl();	
+	}
+	
+	syn Id_decl Decl.localLookup(String name) = getId_decl().getID().equals(name) ? getId_decl() : unknownDecl();
+	syn Id_decl Stmt.localLookup(String name) = unknownDecl();
+	
+	inh Id_decl Block.lookup(String name);
+	eq Block.getStmt(int index).lookup(String name) {
+		Id_decl decl = localLookup(name, index);
+		return !decl.isUnknown() ? decl : lookup(name);
+	}
+	syn Id_decl Block.localLookup(String name, int until) {
+		for (int i = 0; i < until+1; i++) {
+			Id_decl decl = getStmt(i).localLookup(name);
+			if (decl.getID().equals(name)) {
+				return decl;
+			}
+		}
+		return unknownDecl();
+	}
+	
+	inh Id_decl Function.lookup(String name);
+	eq Function.getId_decl().lookup(String name) {
+		return lookup(name);
+	}
+	eq Function.getBlock().lookup(String name) {
+		Id_decl decl = localLookup(name);
+		return !decl.isUnknown() ? decl : lookup(name);
+	}
+	eq Function.getParams().lookup(String name) {
+		return localLookup(name);
+	}
+	syn Id_decl Function.localLookup(String name) {
+		Params par = getParams();
+		for(int i = 0; i < par.getNumId_decl();i++) {
+			Id_decl decl = par.getId_decl(i);
+			if(decl.getID().equals(name)) {
+				return decl;
+			}
+		}
+		return unknownDecl();
+	}
+	
+	syn nta List<Function> Program.predefinedFunctions() {
+		List<Function> list = new List<Function>();
+		
+		Function read = new Function(new IntType(), new Id_decl("read"), new Params(), new Block());
+		list.add(read);
+		
+		List<Id_decl> param = new List<Id_decl>();
+		param.add(new Id_decl("nbr"));
+		Params par = new Params(param);
+		Function print = new Function(new BoolType(), new Id_decl("print"), par, new Block());
+		list.add(print);
+		return list;
+	}	
+	
+	inh Id_decl Id_decl.functionLookup(String name);
+	eq Program.getChild().functionLookup(String name) = localLookup(name);
+	
+}
+
+/*aspect CircularDefinitions {
+	 Identify circular definitions in let expressions 
+	syn boolean Id_use.isCircular() = inExprOf(decl());
+	inh boolean Id_use.inExprOf(Id_decl decl);
+	inh boolean Stmt.inExprOf(Id_decl decl);
+	eq Decl.getExpr().inExprOf(Id_decl decl)
+		= getId_decl() == decl || inExprOf(decl);
+	eq Program.getChild().inExprOf(Id_decl decl) = false;
+}*/

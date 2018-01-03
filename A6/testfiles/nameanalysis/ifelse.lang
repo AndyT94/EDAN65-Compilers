@@ -1,0 +1,8 @@
+int adaw() {
+	int a = 2;
+	if(a>1) {
+		int a=1;
+	} else {
+		a = 0;
+	}
+}

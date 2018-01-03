@@ -1,0 +1,17 @@
+Program
+  List
+    Function
+      IntType
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          Decl
+            IntType
+            Id_decl ID="x"
+            Opt
+          Decl
+            IntType
+            Id_decl ID="y"
+            Opt

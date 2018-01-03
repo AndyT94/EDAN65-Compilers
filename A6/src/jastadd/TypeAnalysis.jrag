@@ -1,0 +1,81 @@
+
+aspect TypeAnalysis {
+	syn Type Expr.type();
+	eq Add.type() = intType();
+	eq Sub.type() = intType();
+	eq Mul.type() = intType();
+	eq Div.type() = intType();
+	eq Mod.type() = intType();
+	eq Equal.type() = boolType();
+	eq NotEqual.type() = boolType();
+	eq Greater.type() = boolType();
+	eq Lesser.type() = boolType();
+	eq LessEqual.type() = boolType();
+	eq GreatEqual.type() = boolType();
+	eq Numeral.type() = intType();
+	eq Id_use.type() = decl().type();
+	syn Type Id_decl.type() = intType();
+	eq FunctionExpr.type() = getId_use().type();
+	eq BinExpr.type(){
+		Type r = getRight().type();
+		Type l = getLeft().type();
+		if(l.compatibleType(r)){
+			return type();
+		}
+		System.out.println("returned unknown");
+		return unknownType();
+	}
+	
+	inh Type Expr.expectedType();
+	eq While.getExpr().expectedType() = boolType();
+	eq If.getExpr().expectedType() = boolType();
+	eq Return.getExpr().expectedType() = intType();
+	eq Assign.getExpr().expectedType() = intType();
+	eq Decl.getExpr().expectedType() = intType();
+	eq CallStmt.getFunctionExpr().expectedType() = intType();
+	
+	syn boolean Type.compatibleType(Type t){
+		return this.equals(t)||isUnknownType()|| t.isUnknownType();
+	}
+	
+	syn boolean Assign.compatibleTypes() = getExpr().expectedType().compatibleType(getExpr().type());
+	
+	syn boolean Decl.compatibleTypes() {
+		if(hasExpr()) {
+			return getExpr().expectedType().compatibleType(getExpr().type());
+		}
+		return true;
+	}
+	
+	syn boolean While.compatibleTypes() = getExpr().expectedType().compatibleType(getExpr().type());
+	
+	syn boolean If.compatibleTypes() = getExpr().expectedType().compatibleType(getExpr().type());
+		
+	//eq Program.getChild().type() = unknownType();
+	//eq Program.getChild().expectedType() = unknownType();
+	
+	inh boolean Id_decl.isVariable();
+	inh boolean Id_decl.isFunction();
+
+	eq Function.getId_decl().isFunction() = true;
+	eq Decl.getId_decl().isVariable() = true;
+	
+	eq Program.getChild().isVariable() = false;
+	eq Program.getChild().isFunction() = false;
+	
+	syn boolean Id_decl.bothVarNFunc() = functionLookup(getID()).isFunction() && this.isVariable();
+	
+	
+	inh Function Id_decl.function();
+	eq Function.getId_decl().function() = this; 
+	
+	syn boolean FunctionExpr.hasAllParam() = getId_use().decl().sameParams(this);
+	
+	syn boolean Id_decl.sameParams(FunctionExpr f){
+		if(function().getParams().getNumId_decl() == f.getExprs().getNumExpr()){
+			return true;
+		}
+		return false;
+	}
+	
+}

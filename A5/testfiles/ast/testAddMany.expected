@@ -1,0 +1,23 @@
+Program
+  List
+    Function
+      IntType
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          Assign
+            Id_use ID="y"
+            Add
+              Add
+                Add
+                  Numeral NUMERAL="6"
+                  Numeral NUMERAL="3"
+                Id_use ID="x"
+              Id_use ID="y"
+          Assign
+            Id_use ID="u"
+            Add
+              Id_use ID="t"
+              Id_use ID="y"

@@ -1,0 +1,22 @@
+Program
+  List
+    Function
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          Assign
+            Id_use ID="y"
+            Mul
+              Mul
+                Mul
+                  Numeral NUMERAL="6"
+                  Numeral NUMERAL="3"
+                Id_use ID="x"
+              Id_use ID="y"
+          Assign
+            Id_use ID="u"
+            Mul
+              Id_use ID="t"
+              Id_use ID="y"

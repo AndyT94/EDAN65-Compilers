@@ -1,0 +1,29 @@
+Program
+  List
+    Function
+      IntType
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          If
+            LessEqual
+              Id_use ID="a"
+              Numeral NUMERAL="5"
+            Block
+              List
+                Assign
+                  Id_use ID="a"
+                  Numeral NUMERAL="1"
+            Opt
+          If
+            GreatEqual
+              Id_use ID="a"
+              Numeral NUMERAL="5"
+            Block
+              List
+                Assign
+                  Id_use ID="a"
+                  Numeral NUMERAL="5"
+            Opt

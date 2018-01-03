@@ -1,0 +1,11 @@
+int a() {
+	while(a<b) {
+		while(b>a) {
+			while(8!=5) {
+				while(8==1) {
+				
+				}
+			}
+		}
+	}
+}

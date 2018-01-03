@@ -1,0 +1,7 @@
+int re() {
+	int a = read();
+}
+
+int print(int hello) {
+
+}

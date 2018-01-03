@@ -1,0 +1,18 @@
+Program
+  List
+    Function
+      IntType
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          Decl
+            IntType
+            Id_decl ID="x"
+            Opt
+          Assign
+            Id_use ID="x"
+            Numeral NUMERAL="5"
+          Return
+            Id_use ID="x"

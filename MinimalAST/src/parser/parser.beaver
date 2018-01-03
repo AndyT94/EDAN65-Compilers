@@ -1,0 +1,125 @@
+%class "LangParser";
+%package "lang.ast";
+
+%embed {:
+	static public class SyntaxError extends RuntimeException { public SyntaxError(String msg) {super(msg);}}
+	// Disable syntax error recovery
+	protected void recoverFromError(Symbol token, TokenStream in) {
+		throw new SyntaxError("Cannot recover from the syntax error");
+	}
+:};
+
+%terminals INT, ID, LPAR, RPAR, LBRACKET, RBRACKET, ASSIGN, SEMICOLON, NUMERAL, PLUS, MUL, MINUS, DIV, MOD, 
+WHILE, IF, ELSE, EQUAL, RETURN, NOTEQUAL, GREATER, LESSER,LESSEQUAL, GREATEQUAL, COMMA;
+
+%typeof program = "Program";
+%typeof function ="Function";
+%typeof block = "Block";
+%typeof else_block = "Opt";
+%typeof opt_assign = "Opt";
+%typeof params ="Params";
+%typeof exprs = "Exprs";
+
+%typeof function_list = "List";
+%typeof stmt_list = "List";
+%typeof expr_list = "List";
+%typeof id_list = "List";
+
+%typeof stmt = "Stmt";
+%typeof return = "Stmt";
+%typeof while = "Stmt";
+%typeof if = "Stmt";
+%typeof assign = "Stmt";
+%typeof decl = "Stmt";
+%typeof callStmt = "Stmt";
+
+%typeof expr = "Expr";
+%typeof term = "Expr";
+%typeof factor = "Expr";
+%typeof functionExpr = "FunctionExpr";
+
+
+%typeof id_decl = "Id_decl";
+%typeof id_use = "Id_use";
+%typeof numeral = "Numeral";
+
+
+%goal program;
+
+program = function_list.f {: return new Program(f); :} ;
+
+function_list = function.a {: return new List().add(a); :}
+		| function_list.a function.b {: return a.add(b); :};
+	
+params = LPAR id_list.a RPAR{: return new Params(a); :}
+		|LPAR RPAR {: return new Params(); :};	
+
+id_list = INT id_decl.a {: return new List().add(a); :}
+		| id_list.a COMMA INT id_decl.b {: return a.add(b); :};	
+	
+expr_list = expr.a {: return new List().add(a); :}
+		| expr_list.a COMMA expr.b {: return a.add(b); :};
+	
+stmt_list = stmt.a {: return new List().add(a); :}
+		| stmt_list.a stmt.b {: return a.add(b); :};	
+	
+		
+function = INT id_decl.id params.l block.b {: return new Function(id, l, b); :};
+
+block = LBRACKET RBRACKET {: return new Block(); :}
+		| LBRACKET stmt_list.a RBRACKET {: return new Block(a); :};
+
+else_block = ELSE block.b {: return new Opt(b); :} | {: return new Opt(); :};
+
+stmt = decl 
+		| assign | while 
+		| if | return 
+		|callStmt ;
+
+callStmt = functionExpr.f SEMICOLON {: return new CallStmt(f);:};
+
+return = RETURN expr.e SEMICOLON {: return new Return(e); :};
+
+while = WHILE LPAR expr.e RPAR block.b {: return new While(e,b); :};
+
+if = IF LPAR expr.e RPAR block.b else_block.c {:return new If(e,b,c); :};
+
+assign = id_use.id ASSIGN expr.e SEMICOLON {: return new Assign(id,e); :} ;
+
+decl = INT id_decl.id opt_assign.o SEMICOLON {: return new Decl(id,o); :};
+
+opt_assign = ASSIGN expr.e {: return new Opt(e); :} | {: return new Opt(); :};
+
+
+expr = expr.a PLUS term.b {:return new Add(a,b); :} 
+		| expr.a MINUS term.b {:return new Sub(a,b); :} 
+		| expr.a EQUAL term.b {: return new Equal(a,b); :}
+		| expr.a NOTEQUAL term.b {: return new NotEqual(a,b); :}
+		| expr.a GREATER term.b {: return new Greater(a,b); :}
+		| expr.a LESSER term.b {: return new Lesser(a,b); :}
+		| expr.a LESSEQUAL term.b {: return new LessEqual(a,b); :}
+		| expr.a GREATEQUAL term.b {: return new GreatEqual(a,b); :};
+
+expr = term;
+
+term = term.a MUL factor.b {: return new Mul(a,b); :} 
+		| term.a DIV factor.b {: return new Div(a,b); :} 
+		| term.a MOD factor.b {: return new Mod(a,b); :}
+;
+term = factor;
+
+factor = LPAR expr.e RPAR 
+		| numeral 
+		| id_use 
+		| functionExpr;
+
+functionExpr = id_use.f exprs.l {: return new FunctionExpr(f, l);:};
+
+exprs = LPAR  RPAR  {: return new Exprs(); :}
+		| LPAR  expr_list.a RPAR  {: return new Exprs(a); :};
+		
+id_decl = ID.id {: return new Id_decl(id); :} ;
+
+id_use = ID.id {: return new Id_use(id); :};
+
+numeral = NUMERAL.num {: return new Numeral(num); :} ;

@@ -1,0 +1,5 @@
+int a(){
+	a= myFunc();
+	a= myFunc(a,1);
+	myFunc();
+}

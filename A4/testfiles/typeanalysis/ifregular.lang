@@ -1,0 +1,9 @@
+int main() {
+	int a = 4;
+	if(2>a) {
+		a=2;
+	} else {
+		int a = 7;
+	}
+	return a;
+}

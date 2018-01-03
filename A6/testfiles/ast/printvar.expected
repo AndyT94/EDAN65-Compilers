@@ -1,0 +1,15 @@
+Program
+  List
+    Function
+      IntType
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          CallStmt
+            FunctionExpr
+              Id_use ID="print"
+              Exprs
+                List
+                  Id_use ID="diff"

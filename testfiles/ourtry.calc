@@ -1,0 +1,5 @@
+let a = 6.47 in
+	let b = 8.0 in
+		a*b*90.0
+	end
+end

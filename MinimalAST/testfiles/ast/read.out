@@ -1,0 +1,14 @@
+Program
+  List
+    Function
+      Id_decl ID="a"
+      Params
+        List
+      Block
+        List
+          Assign
+            Id_use ID="a"
+            FunctionExpr
+              Id_use ID="read"
+              Exprs
+                List

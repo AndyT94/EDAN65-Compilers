@@ -1,0 +1,78 @@
+import java.util.Set;
+import java.util.TreeSet;
+
+aspect Errors {
+	public class ErrorMessage implements Comparable<ErrorMessage> {
+		protected final String message;
+		protected final int lineNumber;
+		public ErrorMessage(String message, int lineNumber) {
+			this.message = message;
+			this.lineNumber = lineNumber;
+		}
+		public int compareTo(ErrorMessage other) {
+			if (lineNumber == other.lineNumber) {
+				return message.compareTo(other.message);
+			}
+			return Integer.compare(lineNumber, other.lineNumber); 
+		}
+		public String toString() {
+			return "Error at line " + lineNumber + ": " + message;
+		}
+	} 
+	protected ErrorMessage ASTNode.error(String message) {
+		return new ErrorMessage(message, getLine(getStart()));
+	}
+
+	coll Set<ErrorMessage> Program.errors() [new TreeSet<ErrorMessage>()] with add root Program;
+
+	inh Program ASTNode.program();
+	eq Program.getChild().program() = this;
+}
+
+
+aspect ErrorContributions {
+	Id_use contributes error("symbol '" + getID() + "' has not been declared before this use!")
+		when decl().isUnknown()
+		to Program.errors() for program();
+
+	Id_decl contributes error("symbol '" + getID() + "' is already declared!")
+		when isMultiplyDeclared()
+		to Program.errors() for program();
+
+/*	Id_use contributes error("the definition of symbol '" + getID() + "' is circular")
+		when isCircular()
+		to Program.errors() for program();*/
+	
+	Assign contributes error(getId_use().getID() + " is not compatible. IDType: " + getId_use().type() + " ExprType: " + getExpr().type())
+		when !compatibleTypes()
+		to Program.errors() for program();
+		
+	Decl contributes error(getId_decl().getID() + " is not compatible. IDType: " + getId_decl().type() + " ExprType: " + getExpr().type())
+		when !compatibleTypes()
+		to Program.errors() for program();
+		
+	While contributes error("Expression is not compatible. Type: " + getExpr().type())
+		when !compatibleTypes()
+		to Program.errors() for program();
+		
+	If contributes error("Expression is not compatible. Type: " + getExpr().type())
+		when !compatibleTypes()
+		to Program.errors() for program();
+	
+	Id_decl contributes error("symbol '" + getID() + "' is both function and variable")
+		when bothVarNFunc()
+		to Program.errors() for program();
+		
+	FunctionExpr contributes error("Param numbers does not match")
+		when !hasAllParam()
+		to Program.errors() for program();
+		
+/*	BinExpr contributes error(" Expected type (" + expectedType().toString() + ") and expression (" + type().toString() + ") is not compatible")
+		when !compatibleTypes()
+		to Program.errors() for program();*/
+	
+	syn String Type.toString();
+	eq UnknownType.toString() = "unknown";
+	eq BoolType.toString() = "bool";
+	eq IntType.toString() = "int";
+}

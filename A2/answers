@@ -1,0 +1,63 @@
+1.3
+
+TODO
+
+1.4
+
+Semantic actions - return statements
+Options & Binding list 
+ask =
+	ASK USER {: return new Ask(new Opt()); :}
+	| ASK USER LBRACKET exp.a RBRACKET {: return new Ask(new Opt(a)); :}
+	;
+
+binding_list =
+	binding.a {: return new List().add(a); :}
+	| binding_list.a binding.b {: return a.add(b); :}
+	;
+
+2.1
+
+parser-gen:
+   [beaver] parser.beaver: Warning: Resolved Shift-Reduce conflict by selecting
+ (MUL: SHIFT; goto 3) over (MUL: REDUCE exp = exp.a MUL exp.b) using precedence.
+
+Conflict? Ambiguos tree
+
+Tests - TreeDump tests failed
+
+Example prog - a*b*c
+
+Shift? TODO
+
+Reduce? TODO
+
+No conflict, why? - Fäste en factor till höger
+
+2.2
+
+parser-gen:
+   [beaver] parser.beaver: Warning: Resolved Shift-Reduce conflict by selecting
+ (ID: SHIFT; goto 26) over (ID: REDUCE binding_list = ) using precedence.
+
+Error message meaning? TODO
+
+2.3a
+
+It generates with no problem
+
+Symbol cannot be converted when compiled
+
+It got removed
+
+2.3b
+
+It generates with no problem
+
+compile - missing return statement
+
+return statement got removed
+
+2.4
+
+It prints Hello many times

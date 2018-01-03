@@ -1,0 +1,3 @@
+let let r = 8.0 in
+	2.0*r
+end

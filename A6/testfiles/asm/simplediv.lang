@@ -1,0 +1,4 @@
+int main() {
+	print(38/2);
+	return 1;
+}

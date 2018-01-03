@@ -1,0 +1,25 @@
+Answers
+
+1 
+För att kunna faktorisera ut kod
+Expr är en abstract class
+Det blir clumsy coding 
+
+2
+den returnerar true
+Fråga varje nod om den är ask
+Nä
+isInteractive är en int
+
+3
+Använd out istället för printstream
+4
+Hashmap
+program.prettyPrint(System.out); lookup?
+Pop tar bort dem men de ska finnas kvar
+
+5
+inside - one place
+data param - everywhere
+
+kan hantera allt på samma sätt

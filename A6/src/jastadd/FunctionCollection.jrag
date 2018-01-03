@@ -1,0 +1,31 @@
+import java.util.Set;
+import java.util.TreeSet;
+
+aspect FunctionCollection {
+		public class Function implements Comparable<Function> {
+
+		public int compareTo(Function other) {
+			return getId_decl().getID().compareTo(other.getId_decl().getID());
+		}
+	} 
+
+	protected Function ASTNode.functionCollection(Function function1) {
+		return function1;
+	}
+	
+	protected String ASTNode.stringCollection(String message) {
+		return message;
+	}
+
+	coll Set<Function> Function.functionCollections() [new TreeSet<Function>()] with add root Function;
+	coll Set<String> Function.stringCollections() [new TreeSet<String>()] with add root Function;
+
+}
+aspect FunctionCollectionContributions {
+	FunctionExpr contributes functionCollection(getId_use().decl().functionLookup(getId_use().getID()).function())
+		to Function.functionCollections() for enclosedFunction();
+	
+	Function contributes stringCollection(getId_decl().getID() + " is circular")
+		when isCircular()
+		to Function.stringCollections() for this;
+}

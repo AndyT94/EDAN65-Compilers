@@ -1,0 +1,5 @@
+main -> b
+b -> a
+a -> b
+b is circular
+a is circular

@@ -1,0 +1,6 @@
+gcd2 -> gcd2
+main -> gcd1
+main -> gcd2
+main -> print
+main -> read
+gcd2 is circular
